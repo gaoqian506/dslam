@@ -1,0 +1,45 @@
+\documentclass{article}
+
+\title { Design for BSLAM }
+\author{author}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Requirement Analyzation}
+
+\subsection{Use Case Diagram}
+
+user : Simulaniously Localization and Mapping (SLAM)
+
+\subsection{Use Case Process}
+
+\begin{tabular}{c c}
+
+User&System\\
+1 select a video & 2 display initial window\\
+3 click "slam" button & 4 display slam process\\
+\end{tabular}
+
+\subsection{Use Case Process Description}
+1. access the system via http service;\\
+2. use only could select specified videos from server side at first moment;\\
+3. could accomplish this task step by step, for example calculate optical flow at first, coarse slam at second;\\
+4. use javascript to call core function.
+
+\section{General Desgin}
+
+\subsection{Startup}
+
+User::OpenWebPage()\\
+\indent WebPage::initialize()\\
+\indent User::SelectVideo()\\
+\indent Worker::DoWork()
+
+
+
+
+
+\end{document}
