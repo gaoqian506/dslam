@@ -1,7 +1,9 @@
 
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
-#include <unistd.h>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/video/video.hpp>
+//#include <unistd.h> // getcwd()
 
 
 
@@ -18,10 +20,21 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	cv::Mat frame;
-	while(capture.read(frame)) {
-		// calc flow
-		// save flow with fixed step
+	cv::Mat prev, next, frame, gray;
+	cv::Mat flow;
+	int times = 0;
+	while(capture.read(frame) && times++ < 5) {
+
+		cv::cvtColor(frame, gray, CV_BGR2GRAY);
+		if (prev.empty()) {
+			prev = gray;
+		}
+		else {
+			next = gray;
+			cv::calcOpticalFlowFarneback(prev, next, flow, 0.5, 3, 15, 3, 5, 1.2, 0);
+			std::cout << "calcOpticalFlowFarneback(" << times << ")" << std::endl;	
+			//save(flow);
+		}
 	}
 	
 
@@ -30,7 +43,7 @@ int main(int argc, char** argv) {
 
 /*
 
-
+	for (int i = 0; i < 5; i++) {
 
 
     Mat edges;

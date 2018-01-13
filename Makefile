@@ -12,7 +12,7 @@ UTLI_SRCS=$(wildcard  utils/*.cpp)
 
 UTLIS=$(UTLI_SRCS:%.cpp=%)
 
-LIBS = -lopencv_highgui -lopencv_core
+LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
 
 all : $(PDFS) $(UTLIS)
 
@@ -20,7 +20,8 @@ $(PDFS) : %.pdf : %.tex
 	xelatex -output-directory=docs $<
 
 $(UTLIS) : % : %.cpp 
-	g++ -g $< $(LIBS) -o $@
+	@echo g++ -g $< -o $@
+	@g++ -g $< $(LIBS) -o $@
 
 clean:
 	@echo Remove temporary files
@@ -29,6 +30,9 @@ clean:
 
 debug_flow:
 	gdb utils/flow
+
+flow:
+	utils/flow data/videos/720.mp4
 
 echo:
 	@echo LIBS:
