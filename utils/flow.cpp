@@ -21,6 +21,9 @@ void save_flow(cv::Mat& flow, int prev_id, int next_id) {
 	}
 	int size_type[3] = { flow.cols, flow.rows, flow.type() };
 	fwrite(size_type, sizeof(size_type), 1, file);
+	for (int i = 0; i < flow.rows; i++) {
+		fwrite(flow.ptr(i), flow.step[0], 1, file);
+	}
 	fclose(file);
 	std::cout << "Write flow to file:" << file_name << std::endl;
 
