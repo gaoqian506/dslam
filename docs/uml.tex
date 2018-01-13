@@ -33,7 +33,10 @@ User&System\\
 
 \subsection{File Oganization}
 docs: design documents;\\
-html: web pages.
+html: web pages; \\
+src: source code for jobs;\\
+utils: source code for utilities.
+
 
 \subsection{Startup}
 
@@ -41,6 +44,14 @@ User::OpenWebPage()\\
 \indent WebPage::initialize()\\
 \indent User::SelectVideo()\\
 \indent Worker::DoWork()
+
+\subsection{work}
+User::ClickButton()\\
+\indent WebPage::SendCommandToServer()\\
+\indent Server::ExecCommand()\\
+\indent Server::ReturnResult()\\
+\indent \indent WebPage::DisplayResultInfo()\\
+\indent \indent WebPage::DisplayResultContent()
 
 \subsection{Web Page}
 

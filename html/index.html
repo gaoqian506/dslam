@@ -1,5 +1,23 @@
 
 <html>
+
+<head>
+<script>
+function work(purpose)
+{
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			str = xmlhttp.responseText;
+		}
+	}
+	xmlhttp.open("GET","work.php?purpose="+purpose,true);
+	xmlhttp.send();
+}
+</script>
+</head>
+
 <body>
 
 <select>
@@ -9,9 +27,10 @@
   <option value="video4">video4</option>
 </select>
 
-<button type="button">slam</button>
+<button type="button" onclick="work('flow')">flow</button>
+<button type="button" onclick="work('coarse')">coarse</button>
+<button type="button" onclick="work('refine')">refine</button>
 
-hello
 
 </body>
 </html>
