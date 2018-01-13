@@ -1,14 +1,39 @@
+#include <stdio.h>							// sprintf
+#include <iostream>							// std::cout
+#include <opencv2/highgui/highgui.hpp>		// cv::VideoCapture
+#include <opencv2/imgproc/imgproc.hpp>		// cv::cvtColor
+#include <opencv2/video/video.hpp>			// cv::calcOpticalFlowFarneback
+#include <unistd.h> 						// getcwd()
 
-#include <iostream>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/video/video.hpp>
-//#include <unistd.h> // getcwd()
 
+void save_flow(cv::Mat& flow, int prev_id, int next_id) {
+
+
+	char file_name[256];
+	sprintf(file_name, "temp/flow/flow_%d_%d.flw", prev_id, next_id);
+
+	FILE* file = NULL;
+	file = fopen(file_name, "wb");
+	if (!file) {
+		perror("Error");
+		std::cout << "Unable to open file:" << file_name << std::endl;
+		return;
+	}
+	int size_type[3] = { flow.cols, flow.rows, flow.type() };
+	fwrite(size_type, sizeof(size_type), 1, file);
+	fclose(file);
+	std::cout << "Write flow to file:" << file_name << std::endl;
+
+}
 
 
 int main(int argc, char** argv) {
 
+	char buffer[1024];
+	if (getcwd(buffer, 1024)) {
+		std::cout << "cwd:" << buffer << std::endl;
+	}
+	std::cout << argv[0] << std::endl;
 	if (argc < 2) { 
 		std::cout << "Please specify a video file.\n";
 		return -1;
@@ -23,7 +48,7 @@ int main(int argc, char** argv) {
 	cv::Mat prev, next, frame, gray;
 	cv::Mat flow;
 	int times = 0;
-	while(capture.read(frame) && times++ < 5) {
+	while(capture.read(frame) && times < 5) {
 
 		cv::cvtColor(frame, gray, CV_BGR2GRAY);
 		if (prev.empty()) {
@@ -32,9 +57,9 @@ int main(int argc, char** argv) {
 		else {
 			next = gray;
 			cv::calcOpticalFlowFarneback(prev, next, flow, 0.5, 3, 15, 3, 5, 1.2, 0);
-			std::cout << "calcOpticalFlowFarneback(" << times << ")" << std::endl;	
-			//save(flow);
+			save_flow(flow, times-1, times);
 		}
+		times++;
 	}
 	
 
@@ -42,6 +67,13 @@ int main(int argc, char** argv) {
 }
 
 /*
+
+	
+			//write_ptr = fopen("test.bin","wb");  // w for write, b for binary
+			//fwrite(buffer,sizeof(buffer),1,write_ptr); // write 10 bytes from our buffer
+
+			//std::cout << "calcOpticalFlowFarneback(" << times << ")" << std::endl;
+			//save(flow);
 
 	for (int i = 0; i < 5; i++) {
 

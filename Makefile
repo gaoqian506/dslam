@@ -27,6 +27,7 @@ clean:
 	@echo Remove temporary files
 	@rm -f $(PDFS) $(LOGS) $(AUXS) $(UTLIS)
 	@find -name "*~" -type f -delete
+	@find -name "*.flw" -type f -delete
 
 debug_flow:
 	gdb utils/flow
