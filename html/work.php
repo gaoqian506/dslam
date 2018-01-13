@@ -12,6 +12,13 @@ case "refine":
     break;
 }
 
+
+/*
 $output = shell_exec('../utils/hello');
 echo "<pre>$output</pre>";
+
+*/
+
 ?>
+
+

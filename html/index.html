@@ -9,7 +9,7 @@ function work(purpose)
 	xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		{
-			str = xmlhttp.responseText;
+			document.getElementById("phpOutput").innerHTML=xmlhttp.responseText;
 		}
 	}
 	xmlhttp.open("GET","work.php?purpose="+purpose,true);
@@ -30,6 +30,8 @@ function work(purpose)
 <button type="button" onclick="work('flow')">flow</button>
 <button type="button" onclick="work('coarse')">coarse</button>
 <button type="button" onclick="work('refine')">refine</button>
+
+<h1 id="phpOutput"></h1>
 
 
 </body>

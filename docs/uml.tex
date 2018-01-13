@@ -60,10 +60,32 @@ combox: video1, video2...\\
 button: flow, coarse, refine
 
 \section{Detail Design}
+
+\subsection{Work.php}
 flow.cpp::main()\\
 \indent OpenVideo()\\
 \indent ForEachFrame()
-\indent CalcFlow
+\indent CalcFlow()
+
+\subsection{Work.php::ClacFlow}
+Work.php::CalcFlow()\\
+\indent output is exec(../utils/flow video name)\\
+\indent echo output
+
+
+\subsection{CPP::flow()}
+CPP::flow()\\
+\indent open video()\\
+\indent foreach frame step\\
+\indent \indent cal optical flow()\\
+\indent \indent save to file()
+
+
+\iffalse
+\fi
+
+
+
 
 
 

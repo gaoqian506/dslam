@@ -1,0 +1,26 @@
+
+
+\subsection{Web Page}
+
+combox: video1, video2...\\
+button: flow, coarse, refine
+\iffalse
+\section{Detail Design}
+
+\subsection{Work.php}
+flow.cpp::main()\\
+\indent OpenVideo()\\
+\indent ForEachFrame()
+\indent CalcFlow()
+
+\subsection{Work.php::ClacFlow}
+Work.php::CalcFlow()\\
+\indent output is exec(../utils/flow video name)\\
+\indent echo output
+
+
+\subsection{CPP::flow}
+CPP::flow()\\
+\indent aaa
+
+\fi
