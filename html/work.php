@@ -1,23 +1,26 @@
 <?php
 
+
+$util = '../utils/hello';
+
 switch ($_GET["purpose"]) {
 case "flow":
-    echo "flow";
+	$util = '../utils/flow ../data/videos/720.mp4';
     break;
 case "coarse":
-    echo "coarse";
+	$util = '../utils/coarse';
     break;
 case "refine":
-    echo "refine";
+	$util = '../utils/refine';
     break;
 }
 
+//echo getcwd();
 
-/*
-$output = shell_exec('../utils/hello');
+
+$output = shell_exec($util);
 echo "<pre>$output</pre>";
 
-*/
 
 ?>
 
