@@ -9,23 +9,26 @@ AUXS=$(TEXS:%.tex=%.aux)
 SRCS=$(wildcard  src/*.cpp)
 OBJS=$(SRCS:%.cpp=%.o)
 UTLI_SRCS=$(wildcard  utils/*.cpp)
-
-UTLIS=$(UTLI_SRCS:%.cpp=%)
+UTILS=$(UTLI_SRCS:%.cpp=%)
 
 LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
 
-all : $(PDFS) $(UTLIS)
+all : $(PDFS) $(UTILS)
+
+pdfs : $(PDFS)
+
+utils : $(UTILS)
 
 $(PDFS) : %.pdf : %.tex
 	xelatex -output-directory=docs $<
 
-$(UTLIS) : % : %.cpp 
+$(UTILS) : % : %.cpp 
 	@echo g++ -g $< -o $@
 	@g++ -g $< $(LIBS) -o $@
 
 clean:
 	@echo Remove temporary files
-	@rm -f $(PDFS) $(LOGS) $(AUXS) $(UTLIS)
+	@rm -f $(PDFS) $(LOGS) $(AUXS) $(UTILS)
 	@find -name "*~" -type f -delete
 	@find -name "*.flw" -type f -delete
 
@@ -38,8 +41,8 @@ flow:
 echo:
 	@echo LIBS:
 	@echo $(LIBS)
-	@echo UTLIS:
-	@echo $(UTLIS)
+	@echo UTILS:
+	@echo $(UTILS)
 	@echo UTLI_SRCS:
 	@echo $(UTLI_SRCS)
 	@echo TOOL_OBJS:
@@ -47,14 +50,14 @@ echo:
 
 
 
-#$(UTLIS) : $(TOOL_OBJS) 
+#$(UTILS) : $(TOOL_OBJS) 
 #	g++ -g $< -o $@
 
-#$(UTLIS_OBJS) : %.o : %.cpp
+#$(UTILS_OBJS) : %.o : %.cpp
 #	g++ -c -g $< -o $@
 #TOOL_OBJS=$(UTLI_SRCS:%.cpp=%.o)
 #rm -f *~ docs/*~ srcs/*~ utils/*~ html/*~
-#UTLIS = $(basename $(UTLI_SRCS))
+#UTILS = $(basename $(UTLI_SRCS))
 #	@echo NAMES:
 #	@echo $(NAMES)
 

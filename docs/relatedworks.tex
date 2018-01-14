@@ -1,0 +1,36 @@
+\documentclass{article}
+
+\title{Related Works}
+\author{Author}
+
+\begin{document}
+
+\maketitle
+
+\section{ORB SLAM}
+
+\subsection{Introduction}
+
+Bundle adjustment is known to provide accurate extimates of camera localization as well as a sparse geometrical reconstruction.
+
+Contributions:\\
+1. Use of the same features for all tasks;\\
+2. Real time operation of large environment;\\
+3. Real time loop closing based on optimization of a pose graph;\\
+4. Real time relocalization with signifiant invariance to viewport and illumination;\\
+5. A new automatic and robust initialization procedure based on model selection that permits to create an initial map of planar and non-planar scene;\\
+6. A survival of fittest approach to map point and keyframe selection that is generous in spawning but very restrictive in culling.
+
+\subsection{Related Works}
+
+A. Place Recognition\\
+B. Map Initialization\\
+C. Monocular SLAM
+
+\subsection{System Overview}
+A. Feature Choise: same feature used for tracking and mapping.\\
+B. Three threads: Tracking, Local mapping and Loop closing.\\
+C. Map points, key frames, and their selections.
+
+
+\end{document}
