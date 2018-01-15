@@ -3,8 +3,11 @@ NAME = ddslam
 
 TEXS=$(wildcard docs/*.tex)
 PDFS=$(TEXS:%.tex=%.pdf)
-LOGS=$(TEXS:%.tex=%.log)
-AUXS=$(TEXS:%.tex=%.aux)
+#LOGS=$(TEXS:%.tex=%.log)
+#AUXS=$(TEXS:%.tex=%.aux)
+#BIBS=$(TEXS:%.tex=%.bib)
+#BBLS=$(TEXS:%.tex=%.bbl)
+#BLGS=$(TEXS:%.tex=%.blg)
 
 SRCS=$(wildcard  src/*.cpp)
 OBJS=$(SRCS:%.cpp=%.o)
@@ -19,8 +22,20 @@ pdfs : $(PDFS)
 
 utils : $(UTILS)
 
-$(PDFS) : %.pdf : %.tex
+$(PDFS) : %.pdf : %.tex %.bib
+	@echo ---------------------------------
 	xelatex -output-directory=docs $<
+	@echo ---------------------------------
+	bibtex  $(basename $<).aux
+	@echo ---------------------------------
+	xelatex -output-directory=docs $<
+	@echo ---------------------------------
+	xelatex -output-directory=docs $<
+
+
+#$(BBLS) : %.bbl : %.tex %.bib
+
+
 
 $(UTILS) : % : %.cpp 
 	@echo g++ -g $< -o $@
@@ -28,9 +43,13 @@ $(UTILS) : % : %.cpp
 
 clean:
 	@echo Remove temporary files
-	@rm -f $(PDFS) $(LOGS) $(AUXS) $(UTILS)
+	@rm -f $(PDFS) $(LOGS) $(AUXS) $(UTILS) $(BBLS) $(BLGS)
 	@find -name "*~" -type f -delete
 	@find -name "*.flw" -type f -delete
+	@find -name "*.aux" -type f -delete
+	@find -name "*.log" -type f -delete
+	@find -name "*.bbl" -type f -delete
+	@find -name "*.blg" -type f -delete
 
 debug_flow:
 	gdb utils/flow
@@ -50,6 +69,8 @@ echo:
 
 
 
+#@echo $< $@ $(word 2,$^)
+#@echo -------------------
 #$(UTILS) : $(TOOL_OBJS) 
 #	g++ -g $< -o $@
 
