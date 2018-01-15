@@ -31,6 +31,77 @@ C. Monocular SLAM
 A. Feature Choise: same feature used for tracking and mapping.\\
 B. Three threads: Tracking, Local mapping and Loop closing.\\
 C. Map points, key frames, and their selections.
+Each map point pi stores:
+\begin{enumerate}
+\item Its 3D position Xwi in the world coordinate system.
+\item The viewing direction ni, which is the mean unit vector of all its viewing directions.
+\item The maximum dmax and minimum dmin distances at which the points can be observed.
+\end{enumerate}
+Each keyframe Ki stores:
+\begin{enumerate}
+\item The camera post Tiw
+\item The camera intrinsics, including focal length and principal point
+\item All the ORB features extracted in the frame whose coordinates are undistored in a distorted if a distortion model is provided.
+\end{enumerate}
+D. Covisibility Graph and Essential Graph\\
+E. Bags of Words Place Recognition
+\subsection{Automatic Map Initialization}
+\begin{itemize}
+\item Find initial correspondences\\
+Extract ORB feature (only at the finest sacle) in the current frame Fc.
+\item Parallel computation of the two models
+\item Model selection
+\item Motion and Structure from Motion recovery
+\item Bundle adjustment
+\end{itemize}
+
+\subsection{Tracking}
+In this sectino we describe the step of tracking thread that are perfromed with every frame form the camera.
+\begin{enumerate}
+\item ORB Extraction
+\item Initial Pose Estimation from Previous Frame
+\item Initial Pose Estimatin via Global Relocalization
+\item Track Local Map
+	\begin{enumerate}
+	\item Compute the map point projection x in the current frame. Discard if it lays out of the image bounds.
+	\item Compute the angle between the current viewing ray v and the map point mean viewing direction n. Discard if v.n < cos(60 angle).
+	\item Compute the distance d from map point to camera center. Discard if it is out of the scale invariance region of the map point d [dmin, dmax].
+	\item Compute the scale in the frame by the ratio d/dmin.
+	\item Compare the representative descriptor D of the map point with the still unmalted ORB featrues.
+	\end{enumerate}
+\item New Keyframe Decision
+	\begin{enumerate}
+	\item More than 20 frames must have passed from the last global relocalization.
+	\item Local mapping is idel, or more than 20 frame have passed from last keyframe insertion.
+	\item Current frame tracks at lest 50 points.
+	\item Current frame tracks less than 90 percent points than Kref.
+	\end{enumerate}
+\item New Keyframe Decision
+\end{enumerate}
+
+\subsection{Local Mappting}
+
+\begin{enumerate}
+\item KeyFrame Insertion
+\item Recent Map Points Culling
+	\begin{enumerate}
+	\item The tracking must find the point in more than the 25 percent of the frames in which it is predicted to be visible.
+	\item If more than one keyframe has passed from map point creation, it must be observed from at least three keyframes.
+	\end{enumerate}
+\item New Map Point Creation
+\item Local Bundle Adjustment
+\item Local Keyframe Culling
+\end{enumerate}
+
+\subsection{Loop Closing}
+
+\begin{enumerate}
+\item Loop Candidates Detection
+\item Compute the Similarity Transformation
+\item Essential Graph Optimization
+\end{enumerate}
+
+
 
 
 \end{document}
