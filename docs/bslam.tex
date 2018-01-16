@@ -23,12 +23,19 @@ A dense optical flow method for real time mapping and localization is produced i
 
 \section{Related Works}
 \subsection{Dense Optical Flow}
-Dense optical flow research started more than 30 years ago with the work of Horn and Schunck
+Dense optical flow research started more than 30 years ago with the work of Horn and Schunck\cite{Horn1981Determining}. We refer to publications like \cite{Baker2007A}\cite{Sun2010Secrets}\cite{Vogel2013An} for detail overview of optical flow methods and the general principles behind it.\par
+
+Some works that integrated sparse descriptor matching for improved large displacement performance\cite{Brox2011Large}\cite{Xu2012Motion}\cite{Weinzaepfel2014DeepFlow}\cite{Kennedy2015Optical}\cite{Timofte2015Sparse}.\par
+
+End-to-end optical flow estimation with convolutional networks was proposed by Dosovitskiy et al. in\cite{Dosovitskiy2015FlowNet}. Their model, dubbed FlowNet, takes a pair of images as input and outputs the flow field. Following FlowNet, several papers have studied optical flow estimation with CNNs: featuring a 3D convolutional network\cite{Du2015Deep}, an unsupervised learning objective\cite{Ahmadi2016Unsupervised}\cite{Yu2016Back}, carefully designed rotationally invariant architectures\cite{Teney2016Learning}, or a pyramidal approach based on the coarse-to-fine idea of variational methods\cite{Ranjan2017Optical}.\par
 
 
-\cite{Brox2004High}
-%\cite{Wedel2008Efficient}
-%\cite{power}
+\subsection{SfM from Optical Flow}
+
+SfM and optical flow have both made significant, but mostly independent, progress. Roughly speaking, SfM methods require purely rigid scenes and use sparse point matches, wide baselines between frames, solve for accurate camera intrinsics and extrinsics, and exploit bundle adjustment to optimize over many views at once. In contrast, optical flow is applied to scenes containing generic motion, exploits continuous optimization, makes weak assumptions about the scene (e.g. that it is piecewise smooth), and typically processes only pairs of video frames at a time.\par
+
+There have been many attempts to combine SfM and flow methods, dating to the 80’s\cite{Heeger1992Subspace}. For video sequences from narrow-focallength lenses, the estimation of the camera motion is challenging, as it is easy to confuse translation with rotation and difficult to estimate the camera intrinsics\cite{Horn1988Direct}.
+
 
 
 %\begin{enumerate}

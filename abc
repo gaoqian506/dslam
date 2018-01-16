@@ -1,5 +1,257 @@
 
 
+
+
+
+	pdftotext $@
+
+import os
+
+
+def main() :
+	str = os.popen("find -name *.tex").read()
+	texs = str.split('\n')
+	for tex_name in texs : 
+		if not tex_name : 
+			continue
+		pdf_name = os.path.splitext(tex_name)[0]+".pdf"
+		bib_name = os.path.splitext(tex_name)[0]+".bib"
+		if (os.path.isfile(bib_name)) :
+			#if (os.path.isfile(pdf_name) and os.path.getmtime(pdf_name) > os.path.getmtime(tex_name) and os.path.getmtime(pdf_name) > os.path.getmtime(bib_name)) :
+				#continue
+			print("xelatex -output-directory=%s %s" % (os.path.dirname(tex_name), tex_name))
+			print("--------1: %s %s--------" % ("xelatex", tex_name))
+			os.system("xelatex -output-directory=%s %s" % (os.path.dirname(tex_name), tex_name))
+			aux_name = os.path.splitext(tex_name)[0]+".aux"
+			print("--------2: %s %s--------" % ("bibtex", aux_name))
+			os.system("bibtex %s" % aux_name)
+			print("--------3: %s %s--------" % ("xelatex", tex_name))
+			os.system("xelatex -output-directory=%s %s" % (os.path.dirname(tex_name), tex_name))
+			print("--------4: %s %s--------" % ("xelatex", tex_name))
+			os.system("xelatex -output-directory=%s %s" % (os.path.dirname(tex_name), tex_name))
+		else :
+			#if (os.path.isfile(pdf_name) and os.path.getmtime(pdf_name) > os.path.getmtime(tex_name)) :
+				#continue
+			print("--------straint: %s %s--------" % ("xelatex", tex_name))
+			os.system("xelatex -output-directory=%s %s" % (os.path.dirname(tex_name), tex_name))
+	'''
+	find all tex file
+	if associated with bib file	
+		if (pdf is empy or old than tex or bib)
+			compile bbl and pdf
+	else if (pdf is empty or old than tex) 
+		compile pdf
+	endif
+	'''
+
+if __name__ == "__main__" :
+	main()
+
+
+NAME = ddslam
+
+TEXS=$(wildcard docs/*.tex)
+PDFS=$(TEXS:%.tex=%.pdf)
+
+#SRCS=$(wildcard  src/*.cpp)
+#OBJS=$(SRCS:%.cpp=%.o)
+UTL_SRCS=$(wildcard  utils/*.cpp)
+UTLS=$(UTL_SRCS:%.cpp=%.utl)
+
+
+LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
+
+
+
+all : pdfs utls 
+
+pdfs : $(PDFS)
+
+utls : $(UTLS)
+
+%.pdf : %.tex %.bib
+	@echo 0
+	xelatex -output-directory=docs $<
+	@echo 1 
+	bibtex $*.aux
+	@echo 2
+	xelatex -output-directory=docs $<
+	@echo 3
+	xelatex -output-directory=docs $<
+
+%.bib :
+	touch $@
+
+%.utl : %.cpp 
+	g++ -g $< $(LIBS) -o $@
+
+clean:
+	find -name "*~" -type f -delete
+	find -name "*.flw" -type f -delete
+	find -name "*.aux" -type f -delete
+	find -name "*.log" -type f -delete
+	find -name "*.bbl" -type f -delete
+	find -name "*.blg" -type f -delete
+	find -name "*.pdf" -type f -delete
+	find -name "*.utl" -type f -delete
+
+debug_flow:
+	gdb utils/flow.utl
+
+flow:
+	utils/flow data/videos/720.mp4
+
+echo:
+	@echo LIBS:
+	@echo $(LIBS)
+	@echo UTILS:
+	@echo $(UTILS)
+	@echo UTLI_SRCS:
+	@echo $(UTLI_SRCS)
+	@echo TOOL_OBJS:
+	@echo $(TOOL_OBJS)
+
+
+
+NAME = ddslam
+
+TEXS=$(wildcard docs/*.tex)
+PDFS=$(TEXS:%.tex=%.pdf)
+#LOGS=$(TEXS:%.tex=%.log)
+#AUXS=$(TEXS:%.tex=%.aux)
+BIBS=$(TEXS:%.tex=%.bib)
+#BBLS=$(TEXS:%.tex=%.bbl)
+#BLGS=$(TEXS:%.tex=%.blg)
+
+SRCS=$(wildcard  src/*.cpp)
+OBJS=$(SRCS:%.cpp=%.o)
+UTLI_SRCS=$(wildcard  utils/*.cpp)
+UTILS=$(UTLI_SRCS:%.cpp=%.utl)
+BIB=
+
+LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
+
+all : pdfs utils 
+
+pdfs : $(PDFS)
+
+utils : $(UTILS)
+
+
+%.pdf : %.tex %.bib
+	xelatex -output-directory=docs $<
+
+%.bib :
+
+%.utl : %.cpp 
+	g++ -g $< $(LIBS) -o $@
+
+
+	@g++ -g $< $(LIBS) -o $@
+
+clean:
+	@echo Remove temporary files
+	@rm -f $(PDFS) $(LOGS) $(AUXS) $(UTILS) $(BBLS) $(BLGS)
+	@find -name "*~" -type f -delete
+	@find -name "*.flw" -type f -delete
+	@find -name "*.aux" -type f -delete
+	@find -name "*.log" -type f -delete
+	@find -name "*.bbl" -type f -delete
+	@find -name "*.blg" -type f -delete
+
+debug_flow:
+	gdb utils/flow
+
+flow:
+	utils/flow data/videos/720.mp4
+
+echo:
+	@echo LIBS:
+	@echo $(LIBS)
+	@echo UTILS:
+	@echo $(UTILS)
+	@echo UTLI_SRCS:
+	@echo $(UTLI_SRCS)
+	@echo TOOL_OBJS:
+	@echo $(TOOL_OBJS)
+
+
+other:
+	@echo $< $(wildcard $(BIB))
+	@echo ----------------------------
+	aaabbbccc aaaabbbccc
+	@echo ---------------------------------
+	xelatex -output-directory=docs $<
+	@echo ---------------------------------
+	bibtex  $(basename $<).aux
+	@echo ---------------------------------
+	xelatex -output-directory=docs $<
+	@echo ---------------------------------
+	xelatex -output-directory=docs $<
+
+	$(eval BIB=$(join $(basename $<),.bib)) 
+	@echo $(BIB)
+	$(eval FIND=$(wildcard $(join $(basename $<),.bib)) 
+	@echo $(FIND)
+	echo $(word 1, $<)
+	echo $(word 2, $<)
+$(BIBS) :
+
+$(UTILS) : % : %.cpp 
+$(PDFS) : %.pdf : %.tex %.bib 
+	@echo $^
+	@echo $(wildcard $(word 2, $^))
+	$(eval BIB=$(word 2, $^))
+	$(eval FIND=$(wildcard $(BIB)))
+	@echo BIB=$(BIB)
+	@echo FIND=$(FIND)
+ifeq ($(BIB), $(FIND))
+	echo aaa
+else
+	echo bbb
+endif	
+
+$(BIBS) :
+
+$(UTILS) : % : %.cpp 
+	@echo g++ -g $< -o $@
+ifeq ("$(BIB)","$(FIND)")
+	@echo yes!
+else
+	@echo no!
+endif
+ifeq ($(word 2, $<), )
+	echo no bib
+else
+	echo has bib
+endif
+
+#$(error err)
+#$(BBLS) : %.bbl : %.tex %.bib
+#@echo $< $@ $(word 2,$^)
+#@echo -------------------
+#$(UTILS) : $(TOOL_OBJS) 
+#	g++ -g $< -o $@
+
+#$(UTILS_OBJS) : %.o : %.cpp
+#	g++ -c -g $< -o $@
+#TOOL_OBJS=$(UTLI_SRCS:%.cpp=%.o)
+#rm -f *~ docs/*~ srcs/*~ utils/*~ html/*~
+#UTILS = $(basename $(UTLI_SRCS))
+#	@echo NAMES:
+#	@echo $(NAMES)
+
+# 
+#TARGETS = $(NAME).pdf $(NAME).dvi
+#
+# $(TARGETS) : $(NAME).tex
+#	latex $(NAME).tex
+#	
+#
+#dvi:
+#	xdvi $(NAME).dvi
+#rm $(TARGETS) $(NAME).aux $(NAME).log
+
 \subsection{Web Page}
 
 combox: video1, video2...\\
@@ -24,3 +276,6 @@ CPP::flow()\\
 \indent aaa
 
 \fi
+
+
+

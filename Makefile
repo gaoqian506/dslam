@@ -3,56 +3,50 @@ NAME = ddslam
 
 TEXS=$(wildcard docs/*.tex)
 PDFS=$(TEXS:%.tex=%.pdf)
-#LOGS=$(TEXS:%.tex=%.log)
-#AUXS=$(TEXS:%.tex=%.aux)
-#BIBS=$(TEXS:%.tex=%.bib)
-#BBLS=$(TEXS:%.tex=%.bbl)
-#BLGS=$(TEXS:%.tex=%.blg)
 
-SRCS=$(wildcard  src/*.cpp)
-OBJS=$(SRCS:%.cpp=%.o)
-UTLI_SRCS=$(wildcard  utils/*.cpp)
-UTILS=$(UTLI_SRCS:%.cpp=%)
+BIBS=$(wildcard docs/*.bib)
+BBLS=$(BIBS:%.bib=%.bbl)
+
+#SRCS=$(wildcard  src/*.cpp)
+#OBJS=$(SRCS:%.cpp=%.o)
+UTL_SRCS=$(wildcard  utils/*.cpp)
+UTLS=$(UTL_SRCS:%.cpp=%.utl)
 
 LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
 
-all : $(PDFS) $(UTILS)
+all : bbls pdfs utls 
+
+bbls : $(BBLS)
 
 pdfs : $(PDFS)
 
-utils : $(UTILS)
+utls : $(UTLS)
 
-$(PDFS) : %.pdf : %.tex %.bib
-	@echo ---------------------------------
+%.bbl : %.bib
+	xelatex -output-directory=docs $(basename $<).tex
+	bibtex $(basename $<).aux
+	xelatex -output-directory=docs $(basename $<).tex
+	xelatex -output-directory=docs $(basename $<).tex
+
+%.pdf : %.tex
 	xelatex -output-directory=docs $<
-	@echo ---------------------------------
-	bibtex  $(basename $<).aux
-	@echo ---------------------------------
-	xelatex -output-directory=docs $<
-	@echo ---------------------------------
-	xelatex -output-directory=docs $<
 
-
-#$(BBLS) : %.bbl : %.tex %.bib
-
-
-
-$(UTILS) : % : %.cpp 
-	@echo g++ -g $< -o $@
-	@g++ -g $< $(LIBS) -o $@
+%.utl : %.cpp 
+	g++ -g $< $(LIBS) -o $@
 
 clean:
-	@echo Remove temporary files
-	@rm -f $(PDFS) $(LOGS) $(AUXS) $(UTILS) $(BBLS) $(BLGS)
-	@find -name "*~" -type f -delete
-	@find -name "*.flw" -type f -delete
-	@find -name "*.aux" -type f -delete
-	@find -name "*.log" -type f -delete
-	@find -name "*.bbl" -type f -delete
-	@find -name "*.blg" -type f -delete
+	find -name "*~" -type f -delete
+	find -name "*.flw" -type f -delete
+	find -name "*.aux" -type f -delete
+	find -name "*.log" -type f -delete
+	find -name "*.bbl" -type f -delete
+	find -name "*.blg" -type f -delete
+	find -name "*.pdf" -type f -delete
+	find -name "*.utl" -type f -delete
+	find -name "*.txt" -type f -delete
 
 debug_flow:
-	gdb utils/flow
+	gdb utils/flow.utl
 
 flow:
 	utils/flow data/videos/720.mp4
@@ -67,28 +61,3 @@ echo:
 	@echo TOOL_OBJS:
 	@echo $(TOOL_OBJS)
 
-
-
-#@echo $< $@ $(word 2,$^)
-#@echo -------------------
-#$(UTILS) : $(TOOL_OBJS) 
-#	g++ -g $< -o $@
-
-#$(UTILS_OBJS) : %.o : %.cpp
-#	g++ -c -g $< -o $@
-#TOOL_OBJS=$(UTLI_SRCS:%.cpp=%.o)
-#rm -f *~ docs/*~ srcs/*~ utils/*~ html/*~
-#UTILS = $(basename $(UTLI_SRCS))
-#	@echo NAMES:
-#	@echo $(NAMES)
-
-# 
-#TARGETS = $(NAME).pdf $(NAME).dvi
-#
-# $(TARGETS) : $(NAME).tex
-#	latex $(NAME).tex
-#	
-#
-#dvi:
-#	xdvi $(NAME).dvi
-#rm $(TARGETS) $(NAME).aux $(NAME).log
