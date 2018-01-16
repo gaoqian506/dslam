@@ -14,7 +14,12 @@ UTLS=$(UTL_SRCS:%.cpp=%.utl)
 
 LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
 
+
+nothing:
+
 all : bbls pdfs utls 
+
+dof.pdf : docs/dof.bbl docs/dof.pdf
 
 bbls : $(BBLS)
 
@@ -23,6 +28,7 @@ pdfs : $(PDFS)
 utls : $(UTLS)
 
 %.bbl : %.bib
+	@echo ----making $@-----------------
 	xelatex -output-directory=docs $(basename $<).tex
 	bibtex $(basename $<).aux
 	xelatex -output-directory=docs $(basename $<).tex

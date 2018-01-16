@@ -1,0 +1,41 @@
+
+
+
+\documentclass{article}
+
+\title{A Hybrid Method for Dense SLAM}
+%\author{State Key Laboratory of Virtual Reality Technology and Systems}
+\author{VR lab}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Recovering high-quality 3D models of a scene from images of a moving
+camera is an important task in computer vision. Many of the existing algorithms for this problem rely on sparse features, like \cite{Mur2017ORB}. Such methods select the sparse features carefully and eliminate outliers. On the other hand, dense computer vision methods have made enormous progress in the recent years, e.g. \cite{Wulff2017Optical} \cite{He2017Mask}.\par
+
+
+On the other hand, methods that estimate general 2D image motion, or optical flow, make much weaker assumptions about the scene. Neither approach fully exploits the mixed structure of natural scenes. Most of what we see in such
+scenes is static - houses, roads, desks, etc. We refer to these static parts of the scene as the rigid scene, or rigid regions. At the same time, moving objects like people, cars, and animals make up a small but often important part of
+natural scenes.\par
+
+For the rigid scene, the camera motion and depth structure fully determine the motion, which forms the basis of SfM methods. Modern optical flow benchmarks, however, are full of moving objects such as cars or bicycles in KITTI, or humans and dragons in Sintel. Assuming a fully static scene or treating these moving objects as outliers is hence not viable for optical flow algorithms; we want to reconstruct flow everywhere.\par
+
+
+Motivated by these achievements, the goal of our paper is to present a pipeline for 3D reconstruction that consistently relies on dense methods: It does not require sparse features at any point. The pipeline can be divided into three stages.
+
+
+\section{Related Works}
+
+\textbf{Feature-Based Methods.} The fundamental idea behind feature-based approaches \cite{Mur2017ORB} is to split the
+overall problem – estimating geometric information from images – into two sequential steps: First, a set of feature observations is extracted from the image. Second, the camera position and scene geometry is computed as a function of these feature observations only.\par
+
+\textbf{Direct Methods.} Direct visual odometry (VO) methods circumvent this limitation by optimizing the geometry directly on the image intensities, which enables using all information in the image. While direct image alignment is well-established for RGB-D or stereo sensors \cite{Kerl2014Dense} \cite{Comport2016Accurate}. In \cite{Engel2014LSD}, a semi-dense depth filtering formulation was proposed which significantly reduces computational complexity, allowing real-time operation on a CPU and even on a modern smartphone.
+
+\textbf{Learning-based Methods.} End-to-end optical flow estimation with convolutional networks was proposed by Dosovitskiy et al. in \cite{Ilg2016FlowNet}. \cite{Wulff2017Optical} From three frames computes a segmentation of the scene into static and moving regions, the depth structure of the scene, and the optical flow.
+
+\bibliographystyle{plain}
+\bibliography{docs/dof.bib}
+
+\end{document}

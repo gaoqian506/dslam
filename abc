@@ -2,6 +2,86 @@
 
 
 
+@inproceedings{Furukawa2008Accurate,
+  title={Accurate camera calibration from multi-view stereo and bundle adjustment},
+  author={Furukawa, Yasutaka and Ponce, Jean},
+  booktitle={Computer Vision and Pattern Recognition, 2008. CVPR 2008. IEEE Conference on},
+  pages={257-268},
+  year={2008},
+}
+
+
+\cite{Bai2016Exploiting}\cite{Oisel2001Epipolar}\cite{Valgaerts2008A}\cite{Wedel2009Structure}\cite{Yuan2007Detecting}. The top monocular optical flow method on the KITTI-2012 benchmark estimates the fundamental matrix and computes flow along the epipolar lines [40]. This approach is limited to fully rigid scenes. Wedel et al. [39] compute the fundamental matrix and regularize optical flow to lie along the epipolar lines. If they detect independent motion, they revert to standard optical flow for the entire frame. 
+
+
+
+@article{Heeger1992Subspace,
+  title={Subspace methods for recovering rigid motion I: Algorithm and implementation},
+  author={Heeger, David J. and Jepson, Allan D.},
+  journal={International Journal of Computer Vision},
+  volume={7},
+  number={2},
+  pages={95-117},
+  year={1992},
+}
+
+
+
+@article{Horn1988Direct,
+  title={Direct methods for recovering motion},
+  author={Horn, Berthold K. P. and Weldon, E. J.},
+  journal={International Journal of Computer Vision},
+  volume={2},
+  number={1},
+  pages={51-76},
+  year={1988},
+}
+
+
+@inproceedings{Bai2016Exploiting,
+  title={Exploiting Semantic Information and Deep Matching for Optical Flow},
+  author={Bai, Min and Luo, Wenjie and Kundu, Kaustav and Urtasun, Raquel},
+  booktitle={European Conference on Computer Vision},
+  pages={154-170},
+  year={2016},
+}
+
+@article{Oisel2001Epipolar,
+  title={Epipolar constrained motion estimation for reconstruction from video sequences},
+  author={Oisel, Lionel and Memin, Etienne and Morin, Luce and Labit, Claude},
+  year={2001},
+}
+
+@inproceedings{Valgaerts2008A,
+  title={A Variational Model for the Joint Recovery of the Fundamental Matrix and the Optical Flow},
+  author={Valgaerts, Levi and Bruhn, Andrés and Weickert, Joachim},
+  booktitle={Dagm Symposium on Pattern Recognition},
+  pages={314-324},
+  year={2008},
+}
+
+@inproceedings{Wedel2009Structure,
+  title={Structure- and motion-adaptive regularization for high accuracy optic flow},
+  author={Wedel, Andreas and Cremers, Daniel and Pock, Thomas and Bischof, Horst},
+  booktitle={IEEE  International Conference on Computer Vision},
+  pages={1663-1668},
+  year={2009},
+}
+
+
+@article{Yuan2007Detecting,
+  title={Detecting Motion Regions in the Presence of a Strong Parallax from a Moving Camera by Multiview Geometric Constraints},
+  author={Yuan, Chang and Medioni, Gerard and Kang, Jinman and Cohen, Isaac},
+  journal={IEEE Transactions on Pattern Analysis & Machine Intelligence},
+  volume={29},
+  number={9},
+  pages={1627-1641},
+  year={2007},
+}
+
+
+
+
 
 	pdftotext $@
 
