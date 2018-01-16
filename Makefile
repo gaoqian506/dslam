@@ -19,7 +19,9 @@ nothing:
 
 all : bbls pdfs utls 
 
-dof.pdf : docs/dof.bbl docs/dof.pdf
+soba.pdf : docs/soba.bbl docs/soba.pdf
+
+dof.pdf : docs/dof.bbl docs/dof.tex
 
 bbls : $(BBLS)
 
