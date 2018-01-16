@@ -3,7 +3,6 @@
 
 \usepackage{authblk}
 \usepackage{amsmath}
-\usepackage{mathtools}
 
 \title{Semantic Optical-flow Bundle Adjustment Vision-Based SLAM}
 
@@ -69,7 +68,8 @@ We generate semantic dense optical flow based on the work of Wulff \cite{Wulff20
 
 We use a uniform method for Initialization and Local Bundle Adjustment. Use cost function as mentioned in \cite{Delaunoy2014Photometric} with some modification as follows.
 
-\begion{equation}
+\begin{equation}
+E = \Sigma(xFx)
 
 \end{equation}
 
