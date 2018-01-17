@@ -1,20 +1,20 @@
 <?php
 
 
-$util = 'utils/hello.utl';
+$util = 'bin/hello.bin';
 
 switch ($_GET["purpose"]) {
 case "flow":
-	$util = 'utils/flow.utl data/videos/720.mp4';
+	$util = 'bin/flow.bin data/videos/720.mp4';
     break;
 case "local":
-	$util = 'utils/local.utl';
+	$util = 'bin/local.bin';
     break;
 case "coarse":
-	$util = 'utils/coarse.utl';
+	$util = 'bin/coarse.bin';
     break;
 case "refine":
-	$util = 'utils/refine.utl';
+	$util = 'bin/refine.bin';
     break;
 }
 

@@ -1,5 +1,4 @@
 
-NAME = ddslam
 
 TEXS=$(wildcard docs/*.tex)
 PDFS=$(TEXS:%.tex=%.pdf)
@@ -9,8 +8,8 @@ BBLS=$(BIBS:%.bib=%.bbl)
 
 SRCS=$(wildcard  src/*.cpp)
 OBJS=$(SRCS:%.cpp=%.o)
-UTL_SRCS=$(wildcard  utils/*.cpp)
-UTLS=$(UTL_SRCS:%.cpp=%.utl)
+BIN_SRCS=$(wildcard  bin/*.cpp)
+BINS=$(BIN_SRCS:%.cpp=%.bin)
 
 LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
 INCLUDES = -Iinclude
@@ -18,7 +17,7 @@ INCLUDES = -Iinclude
 
 nothing:
 
-all : bbls pdfs utls 
+all : bbls pdfs bins 
 
 soba : docs/soba/soba.bbl docs/soba/soba.pdf
 
@@ -26,15 +25,15 @@ dof : docs/dof.bbl docs/dof.tex
 
 uml : docs/uml.pdf
 
-flow : utils/flow.utl
+flow : bin/flow.bin
 
-local : utils/local.utl
+local : bin/local.bin
 
 bbls : $(BBLS)
 
 pdfs : $(PDFS)
 
-utls : $(UTLS)
+bins : $(BINS)
 
 %.bbl : %.bib
 	@echo ----making $@-----------------
@@ -47,7 +46,7 @@ utls : $(UTLS)
 	xelatex -output-directory=$(dir $<) $<
 
 
-%.utl : %.cpp $(OBJS)
+%.bin : %.cpp $(OBJS)
 	g++ -g $(OBJS) $< $(INCLUDES) $(LIBS) -o $@
 
 %.o : %.cpp
@@ -60,7 +59,7 @@ clean: clean_flow
 	find -name "*.bbl" -type f -delete
 	find -name "*.blg" -type f -delete
 	find -name "*.pdf" -type f -delete
-	find -name "*.utl" -type f -delete
+	find -name "*.bin" -type f -delete
 	find -name "*.txt" -type f -delete
 	find -name "*.o" -type f -delete
 
@@ -68,18 +67,18 @@ clean_flow:
 	find -name "*.flw" -type f -delete
 
 debug_flow:
-	gdb utils/flow.utl
+	gdb bin/flow.bin
 
 run_flow:
-	utils/flow.utl data/videos/720.mp4
+	bin/flow.bin data/videos/720.mp4
 
 echo:
 	@echo LIBS:
 	@echo $(LIBS)
-	@echo UTILS:
-	@echo $(UTILS)
-	@echo UTLI_SRCS:
-	@echo $(UTLI_SRCS)
+	@echo BINS:
+	@echo $(BINS)
+	@echo BIN_SRCS:
+	@echo $(BIN_SRCS)
 	@echo TOOL_OBJS:
 	@echo $(TOOL_OBJS)
 
