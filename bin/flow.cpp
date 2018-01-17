@@ -1,4 +1,4 @@
-//#include <stdio.h>		// sprintf
+#include <stdio.h>		// perror
 #include <iostream>		// std::cout
 #include <unistd.h> 	// getcwd()
 
@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 	}
 	std::cout << argv[0] << std::endl;
 	if (argc < 2) { 
-		std::cout << "Please specify a video file.\n";
+		perror("Please specify a video file");
 		return -1;
 	}
 

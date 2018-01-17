@@ -35,6 +35,8 @@ pdfs : $(PDFS)
 
 bins : $(BINS)
 
+objs : $(OBJS)
+
 %.bbl : %.bib
 	@echo ----making $@-----------------
 	xelatex -output-directory=$(dir $<) $(basename $<).tex

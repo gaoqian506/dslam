@@ -1,6 +1,8 @@
 
 
 
+		std::cout << "Please specify a video file.\n";
+
 
 #include <stdio.h>							// sprintf
 #include <iostream>							// std::cout
