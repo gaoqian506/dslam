@@ -63,6 +63,36 @@ void saveFlow(cv::Mat& flow, const char* name) {
 	std::cout << "Write flow to file:" << name << std::endl;
 }
 
+void readFlow(const char* name, cv::Mat& flow) {
+
+
+	FILE* file = NULL;
+	file = fopen(name, "rb");
+	if (!file) {
+		perror(name);
+		return;
+	}
+	FlowHeader header;
+	fread(&header, sizeof(header), 1, file);
+
+	if (flow.cols != header.cols ||
+		flow.rows != header.rows ||
+		flow.type() != header.type ||
+		flow.step[1] != header.step ||
+		!flow.isContinuous()) {
+		flow = cv::Mat(header.rows, header.cols,
+			header.type);
+	}
+
+	fread(flow.data, flow.cols*flow.step[1],
+		1, file);
+	std::cout << "Read flow from file:" << name << std::endl;
+
+
+	fclose(file);
+
+}
+
 const char* queryFlowName(int from, int to) {
 
 	sprintf(status.tempFlowName, "%s/flow_%d_%d.flw",

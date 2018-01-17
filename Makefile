@@ -71,8 +71,14 @@ clean_flow:
 debug_flow:
 	gdb bin/flow.bin
 
+debug_local:
+	gdb bin/local.bin
+
 run_flow:
 	bin/flow.bin data/videos/720.mp4
+
+run_local:
+	bin/local.bin
 
 echo:
 	@echo LIBS:

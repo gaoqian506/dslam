@@ -22,7 +22,7 @@ struct Status {
 
 void makeFlowFromVideo(const char* video_name);
 void saveFlow(cv::Mat& flow, const char* name);
-cv::Mat loadFlow(const char* name);
+void readFlow(const char* name, cv::Mat& flow);
 const char* queryFlowName(int from, int to);
 
 
