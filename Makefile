@@ -19,7 +19,7 @@ nothing:
 
 all : bbls pdfs utls 
 
-soba.pdf : docs/soba.bbl docs/soba.pdf
+soba.pdf : docs/soba/soba.bbl docs/soba/soba.pdf
 
 dof.pdf : docs/dof.bbl docs/dof.tex
 
@@ -31,13 +31,13 @@ utls : $(UTLS)
 
 %.bbl : %.bib
 	@echo ----making $@-----------------
-	xelatex -output-directory=docs $(basename $<).tex
+	xelatex -output-directory=$(dir $<) $(basename $<).tex
 	bibtex $(basename $<).aux
-	xelatex -output-directory=docs $(basename $<).tex
-	xelatex -output-directory=docs $(basename $<).tex
+	xelatex -output-directory=$(dir $<) $(basename $<).tex
+	xelatex -output-directory=$(dir $<) $(basename $<).tex
 
 %.pdf : %.tex
-	xelatex -output-directory=docs $<
+	xelatex -output-directory=$(dir $<) $<
 
 %.utl : %.cpp 
 	g++ -g $< $(LIBS) -o $@

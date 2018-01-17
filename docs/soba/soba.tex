@@ -3,6 +3,9 @@
 
 \usepackage{authblk}
 \usepackage{amsmath}
+\usepackage{graphicx}
+%\usepackage{subcaption}
+\usepackage{subfig}
 
 \title{Semantic Optical-flow Bundle Adjustment Vision-Based SLAM}
 
@@ -68,13 +71,56 @@ We generate semantic dense optical flow based on the work of Wulff \cite{Wulff20
 
 We use a uniform method for Initialization and Local Bundle Adjustment. Use cost function as mentioned in \cite{Delaunoy2014Photometric} with some modification as follows.
 
-\begin{equation}
-E = \Sigma(xFx)
+$$E=\sum (x'Fx)^2$$
 
-\end{equation}
+The process flow as follows:
+
+\begin{enumerate}
+
+\item \textbf{First frame.} Just read, do nothing.
+\item \textbf{Second frame.} Make optical flow with first frame. The camera motion and scene are estimated which a special bundle adjustment(BA) case only with two frame.
+\item \textbf{third frame.} Make the optical flow with last frame. frame culling is performed with survival of fittest stratidry. The local BA are used to estimate local map the camera parameters including external, intrinsics and distortion coefficients.
+
+\item \textbf{consecent frames.} Make the similary process like step 3.
+\item \textbf{Covisibility group selection.} When covisible aera more than 75\% we trate as a covisible menber.
+
+\item \textbf{Local loop closing.} Closed but not adjuncent frames are flow evaluated, to add into the covisibility group, extend the keyframes graph.
+
+
+\end{enumerate}
+
+\subsection{Global Optimization and Loop Closing}
+
+We use a so called essencial graph to optimization globally like \cite{Mur2017ORB}. A independent thread to do this parallelcally with local optimating thread.\par
+
+Average the error within the stage of local loop closing.
+
+\section{Experariment}
+
+\subsection{Optical Flow Detection and Map Graph Generation}
+
+\begin{figure}
+  \subfloat[MF-Flow illustration1]{
+	\begin{minipage}[c][1\width]{
+	   0.45\textwidth}
+	   \centering
+	   \includegraphics[width=0.8\textwidth]{docs/soba/mr-flow1.jpg}
+	\end{minipage}}
+ \hfill
+  \subfloat[Captopn small box]{
+	\begin{minipage}[c][1\width]{
+	   0.45\textwidth}
+	   \centering
+	   \includegraphics[width=0.8\textwidth]{docs/soba/mr-flow2.jpg}
+	\end{minipage}}
+ \hfill
+
+\caption{Caption of entire figure}
+\end{figure}
+
 
 
 \bibliographystyle{plain}
-\bibliography{docs/soba}
+\bibliography{docs/soba/soba}
 
 \end{document}
