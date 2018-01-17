@@ -59,6 +59,19 @@ User::ClickButton()\\
 combox: video1, video2...\\
 button: flow, coarse, refine
 
+\section{Classes}
+
+\subsection{dslam}
+
+\begin{enumerate}
+
+\item struct dslam::FlowHeader;
+\item void dslam::saveFlowFile();
+\item void dslam::readFlowFile();
+\item void dslam::makeFlowFromVideo();
+\item struct dslam::State;
+\end{enumerate}
+
 \section{Detail Design}
 
 \subsection{Work.php}
@@ -109,4 +122,4 @@ Utils::Coarse()\\
 
 
 
-\end{document}
+\end{document}dslam.cpp:
