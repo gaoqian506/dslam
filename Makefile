@@ -17,9 +17,10 @@ INCLUDES = -Iinclude
 
 nothing:
 
-all : bbls pdfs bins 
+all : bbls pdfs bins
 
 soba : docs/soba/soba.bbl docs/soba/soba.pdf
+im2scene : docs/im2scene/im2scene.bbl docs/im2scene/im2scene.pdf
 
 dof : docs/dof.bbl docs/dof.tex
 
@@ -43,9 +44,11 @@ objs : $(OBJS)
 	bibtex $(basename $<).aux
 	xelatex -output-directory=$(dir $<) $(basename $<).tex
 	xelatex -output-directory=$(dir $<) $(basename $<).tex
+	pdftotext $(basename $<).pdf
 
 %.pdf : %.tex
 	xelatex -output-directory=$(dir $<) $<
+	pdftotext $@
 
 
 %.bin : %.cpp $(OBJS)
@@ -89,4 +92,3 @@ echo:
 	@echo $(BIN_SRCS)
 	@echo TOOL_OBJS:
 	@echo $(TOOL_OBJS)
-

@@ -1,6 +1,63 @@
 
 
 
+	if (flow->mat.cols != header.cols ||
+		flow->mat.rows != header.rows ||
+		flow->mat.type() != header.type ||
+		flow->mat.step[1] != header.step ||
+		!flow->mat.isContinuous()) {
+		flow->mat = cv::Mat(header.rows, header.cols,
+			header.type);
+	}
+
+void frameAddNeighbor(Frame frame, Frame nFrame, cv::Mat flow) {
+	FrameNeighbor neighbor = createFrameNeighbor();
+	frameNeighborSetFrame(neighbor, nFrame);
+	frameNeighborSetFlow(neighbor, flow);
+	frameAddNeighbor(frame, neighbor);
+
+}
+
+
+		frameAddNeighbor(lastest, frame, flow1);
+		frameAddNeighbor(frame, lastest, flow2);
+void readFlow(const char* name, cv::Mat& flow) {
+
+
+	FILE* file = NULL;
+	file = fopen(name, "rb");
+	if (!file) {
+		perror(name);
+		return;
+	}
+	FlowHeader header;
+	fread(&header, sizeof(header), 1, file);
+
+	if (flow.cols != header.cols ||
+		flow.rows != header.rows ||
+		flow.type() != header.type ||
+		flow.step[1] != header.step ||
+		!flow.isContinuous()) {
+		flow = cv::Mat(header.rows, header.cols,
+			header.type);
+	}
+
+	fread(flow.data, flow.cols*flow.step[1],
+		1, file);
+	std::cout << "Read flow from file:" << name << std::endl;
+
+
+	fclose(file);
+
+}
+
+void readFlow(const char* name, Flow flow);
+
+void flowGraphAddFrame(FlowGraph graph, Frame frame);
+
+
+void frameAddNeighbor(Frame frame, Frame nFrame, Flow flow);
+
 hello NppFtp
 
 //#include <opencv2/core/core.hpp>

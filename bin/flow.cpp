@@ -13,18 +13,12 @@ int main(int argc, char** argv) {
 		std::cout << "cwd:" << buffer << std::endl;
 	}
 	std::cout << argv[0] << std::endl;
-	if (argc < 2) { 
+	if (argc < 2) {
 		perror("Please specify a video file");
 		return -1;
 	}
 
 	dslam::makeFlowFromVideo(argv[1]);
 
-	std::cout << "hello flow" << std::endl;	
+	std::cout << "hello flow" << std::endl;
 }
-
-
-
-
-
-

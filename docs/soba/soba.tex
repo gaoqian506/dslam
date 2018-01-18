@@ -4,7 +4,6 @@
 \usepackage{authblk}
 \usepackage{amsmath}
 \usepackage{graphicx}
-%\usepackage{subcaption}
 \usepackage{subfig}
 
 \title{Semantic Optical-flow Bundle Adjustment Vision-Based SLAM}
@@ -26,14 +25,14 @@ This paper proposed a novel method that use semantic optical flow to Simutanious
 
 Aquire event scene information from image sequence has been a atractive compution vision problem. In last decades, many improments has achieved. Mur-Artal, etc. \cite{Mur2017ORB} \cite{Mur2017ORB2} use feature points reconstrct the sparse scene along with accurate camera trajity. Engel, etc. \cite{Engel2014LSD} \cite{Engel2015Large} \cite{Caruso2015Large} proposed a large scale direct(LSD) mehtod to reconstruct semi-dense scene as well as camera motion. Alismail, etc. \cite{Alismail2016Photometric} use photography info to make a dense scene. Recent years, learn based slam methods have arised lotly. Zhou propose a method to reconstruct the object based-on cnn semantic segmentation \cite{Rui2018Semantic}.\par
 
-In this paper, we propose a semantic-optical-flow based simutianiously localization and mapping(SLAM) method. Firstly, a semantic and dense optical flow is tracked with convolutional neuero network(CNN), which in objects and background are segmented. Secondly, a local bundle adjustment(BA) is used to recovery the local map and imporve camera parameters (external and intrinsic) iterately. Lastly, a global optical-flow BA is used to refine the scene structure, loop closing detecting and recovering is also optimized. 
+In this paper, we propose a semantic-optical-flow based simutianiously localization and mapping(SLAM) method. Firstly, a semantic and dense optical flow is tracked with convolutional neuero network(CNN), which in objects and background are segmented. Secondly, a local bundle adjustment(BA) is used to recovery the local map and imporve camera parameters (external and intrinsic) iterately. Lastly, a global optical-flow BA is used to refine the scene structure, loop closing detecting and recovering is also optimized.
 
 In this paper, we make some of flowing contributions:
 
 \begin{enumerate}
 \item \textbf{Dense Optical Flow Pipline for SLAM.} Triditionally, sparse optical flow is used in SLAM successfully, while dense optical flow could provide much more detials about the scene and more robust to solve the structure and motion parameters.
 
-\item \textbf{A novel optimazation method suitble for semantic dense optical flow.} Initializing, local and global optimization are all use of uniform features. A sample initializing method is proposed rather than plane-parallax two-fold method, covisibility graph are also maintained like \cite{Mur2017ORB}. 
+\item \textbf{A novel optimazation method suitble for semantic dense optical flow.} Initializing, local and global optimization are all use of uniform features. A sample initializing method is proposed rather than plane-parallax two-fold method, covisibility graph are also maintained like \cite{Mur2017ORB}.
 
 \item \textbf{Stable with dynamic-object noise.} Use with semantic segmented optical flow, we can delimite the noise of dynamic object atrually. This improve the stability significantly.
 \end{enumerate}
@@ -46,11 +45,12 @@ A precedence first introduce the feature-points based method for slam[]. Other p
 
 \subsection{Direct Methods for SLAM}
 
-[][] use pixel info directly rather than feature points to recovery scene and camera motion. Such method provide more appereance, but the enjure the aflluence of dynamic object. Engel, etc. make large scale semi-dense scene \cite{Engel2014LSD}. 
+[][] use pixel info directly rather than feature points to recovery scene and camera motion. Such method provide more appereance, but the enjure the aflluence of dynamic object. Engel, etc. make large scale semi-dense scene \cite{Engel2014LSD}.
+\cite{Alcantarilla2012On} introduce the concept of dense scene flow for visual SLAM applications with a stereo visual system. This work estimate the relative camera motion by matching detected features between two consecutive frames.  As our known, there is no pure VO system pure based on dense optical flow.
 
 \subsection{Learning-Based Methods for SLAM}
 
-Rui Zhu, etc. use sementic segmentation map to recovery the struction of object as well as its class \cite{Rui2018Semantic}.
+Rui Zhu, etc. use sementic segmentation map to recovery the struction of object as well as its class \cite{Rui2018Semantic}. \cite{Sinha2017SurfNet} study the problem of directly generating the 3D shape surface of rigid and non-rigid shapes using deep convolutional neural networks. \cite{Mukasa_2017_ICCV} propose a novel framework for integrating geometrical measurements of monocular visual simultaneous localization and mapping (SLAM) and depth prediction using a convolutional neural network (CNN).
 
 \section{Mehtod}
 
@@ -65,15 +65,13 @@ Rui Zhu, etc. use sementic segmentation map to recovery the struction of object 
 
 \subsection{Semantic Dense Optical Flow Generation}
 
-We generate semantic dense optical flow based on the work of Wulff \cite{Wulff2017Optical}
+We generate semantic dense optical flow based on the work of Wulff.  \cite{Wulff2017Optical}\par
 
-\subsection{Map Initialization and Local Bundle Adjustment}
+Only consecent frames are optical flow linked double side. And saperated frame could calculate the flow accumuately.
 
-We use a uniform method for Initialization and Local Bundle Adjustment. Use cost function as mentioned in \cite{Delaunoy2014Photometric} with some modification as follows.
+\subsection{Map Initialization and Local Optimization}
 
-$$E=\sum (x'Fx)^2$$
-
-The process flow as follows:
+\textbf{The Process Flow.}
 
 \begin{enumerate}
 
@@ -81,13 +79,24 @@ The process flow as follows:
 \item \textbf{Second frame.} Make optical flow with first frame. The camera motion and scene are estimated which a special bundle adjustment(BA) case only with two frame.
 \item \textbf{third frame.} Make the optical flow with last frame. frame culling is performed with survival of fittest stratidry. The local BA are used to estimate local map the camera parameters including external, intrinsics and distortion coefficients.
 
+\item \textbf{Default Optical Flow Detection.} When reading a frame, the otptical flow a detected with last frame, and neighbors each other, add current frame into flow graph as a new frame which may affect the frame culling progress.
+
 \item \textbf{consecent frames.} Make the similary process like step 3.
 \item \textbf{Covisibility group selection.} When covisible aera more than 75\% we trate as a covisible menber.
 
 \item \textbf{Local loop closing.} Closed but not adjuncent frames are flow evaluated, to add into the covisibility group, extend the keyframes graph.
 
-
 \end{enumerate}
+
+
+\textbf{Cost Function.}
+
+We provide a novel regression cost funtion to estimate 3d structure and camera parameters jointly. The idea like photography bundle adjustment stratidry produced by \cite{Delaunoy2014Photometric}, where as we focus on dense optical flow rathan pixel-wise intensity. Up on calculated pixel-wise movement, the cost function will convergent more fast.
+
+
+\begin{displaymath}
+E=\sum (x'Fx)^2
+\end{displaymath}
 
 \subsection{Global Optimization and Loop Closing}
 
