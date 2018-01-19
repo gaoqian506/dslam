@@ -11,8 +11,18 @@ OBJS=$(SRCS:%.cpp=%.o)
 BIN_SRCS=$(wildcard  bin/*.cpp)
 BINS=$(BIN_SRCS:%.cpp=%.bin)
 
-LIBS = -lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
-INCLUDES = -Iinclude
+G2O_ROOT=/home/gq/Documents/tools/g2o
+
+LIBS=-lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
+LIBS+=-L/home/gq/Documents/tools/g2o/lib
+LIBS+=-lg2o_types_slam3d
+LIBS+=-lg2o_stuff
+LIBS+=-Wl,-rpath,/home/gq/Documents/tools/g2o/lib  
+
+
+INCLUDES=-Iinclude
+INCLUDES+=-I/usr/include/eigen3
+INCLUDES+=-I$(G2O_ROOT) -I$(G2O_ROOT)/build 
 
 
 nothing:
@@ -29,6 +39,11 @@ uml : docs/uml.pdf
 flow : bin/flow.bin
 
 local : bin/local.bin
+
+g2oTest : bin/g2oTest.bin
+
+doxygen:
+	doxygen docs/doxygen/doxy.config
 
 bbls : $(BBLS)
 
@@ -52,12 +67,12 @@ objs : $(OBJS)
 
 
 %.bin : %.cpp $(OBJS)
-	g++ -g $(OBJS) $< $(INCLUDES) $(LIBS) -o $@
+	g++ -g -std=c++11 $(LIB_DIR) $(OBJS) $< $(INCLUDES) $(LIBS) -o $@
 
 %.o : %.cpp
 	g++ -c -g $< $(INCLUDES) $(LIBS) -o $@
 
-clean: clean_flow
+clean: clean_flow clean_doxygen
 	find -name "*~" -type f -delete
 	find -name "*.aux" -type f -delete
 	find -name "*.log" -type f -delete
@@ -71,6 +86,9 @@ clean: clean_flow
 clean_flow:
 	find -name "*.flw" -type f -delete
 
+clean_doxygen:
+	rm -rf docs/doxygen/html
+
 debug_flow:
 	gdb bin/flow.bin
 
@@ -82,6 +100,9 @@ run_flow:
 
 run_local:
 	bin/local.bin
+
+run_g2oTest:
+	bin/g2oTest.bin
 
 echo:
 	@echo LIBS:

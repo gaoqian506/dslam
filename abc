@@ -1,6 +1,10 @@
 
 
 
+LIBS+=-lg2o_core
+LIBS+=-lg2o_types_sim3
+LIBS+=-lg2o_types_data
+
 	if (flow->mat.cols != header.cols ||
 		flow->mat.rows != header.rows ||
 		flow->mat.type() != header.type ||
