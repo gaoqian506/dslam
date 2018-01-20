@@ -1,6 +1,39 @@
 
 
 
+/**
+@brief Optimize camera parameters by the optcal flow constrains, this is to do a non-linear optimizing task. Firstly, each neibor give a suggestion, and then, they are fused to a optimized result. If not satisfy terminate condition, then otpimize the parameters again.
+
+@param camera The optimizing target.
+@param neighborCameras The camera vector of neighbors.
+@param neighborFlows The optical flow vector of neighbors.
+@return NO
+@see frameOptimizeCameraParameters() flowGraphLocalOptimize()
+@note No.
+*/
+	
+	assert(neighborCameras.size() == neighborFlows.size());
+	std::vector<Camera>::const_iterator itCamera = neighborCamera.begin();
+	std::vector<Flow>::const_iterator itFlow = neighborFlow.begin();
+
+
+	while(itFlow != neighborFlow.end()) {
+
+		CameraParameterOptimizeSuggestion suggestion = resolveCameraParameterOptimize
+
+		itCamera++;
+		itFlow++;
+
+	}
+
+/**
+Query all of frame's neighbor cameras.
+@param frame Which frame is to query.
+@return Vector of neighbors' cameras.
+@see CameraObj
+@note No.
+*/
+
 LIBS+=-lg2o_core
 LIBS+=-lg2o_types_sim3
 LIBS+=-lg2o_types_data

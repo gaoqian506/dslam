@@ -38,7 +38,7 @@ uml : docs/uml.pdf
 
 flow : bin/flow.bin
 
-local : bin/local.bin
+local : dash_line bin/local.bin
 
 g2oTest : bin/g2oTest.bin
 
@@ -51,7 +51,10 @@ pdfs : $(PDFS)
 
 bins : $(BINS)
 
-objs : $(OBJS)
+objs : dash_line $(OBJS)
+
+dash_line :
+	@echo ----------------------------------
 
 %.bbl : %.bib
 	@echo ----making $@-----------------
