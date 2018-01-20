@@ -1,6 +1,456 @@
 
 
 
+
+
+
+		//dslam::flowGraphCullRedundantFlow(graph);
+
+
+/**
+@brief A 4D int array that descrip the iterate time for a solver optimization.
+*/
+struct Dimension4 {
+	int dimension4[4];
+};
+
+/**
+@brief A 4D index indicate iterate position when performing a optimizing.
+*/
+struct Index4 {
+	int index[4];
+};
+
+
+/**
+@brief Camera parameter suggestion object that descript the increment of camera parameters that will achieve a better consistent respect of optical flow.
+*/
+struct CameraParameterSuggestionObj {
+	/** Suggestion of increment of camera parameters. */
+	double suggestion[9];
+};
+
+typedef CameraParameterSuggestionObj* CameraParameterSuggestion;
+
+/**
+@brief Create a empty camera parameter optimizing suggestion, that the increments are set to zeros.
+
+@return A empty camera parameter suggestion object.
+@see CameraParameterSuggestionObj
+@note No.
+*/
+CameraParameterSuggestion createEmptyCameraParameterSuggestion();
+
+
+/**
+@brief Create a empty camera parameter optimizing suggestion from a memory buffer.
+
+@param data The start address of data buffer in memory.
+@return A serialized camera parameter suggestion object.
+@see createEmptyCameraParameterSuggestion
+@note No.
+*/
+CameraParameterSuggestion createCameraParameterSuggestionFromMemory(double* data);
+
+/**
+@brief Update the camera parameters with sugesstion, this will consider the manifold phenomenon.
+
+@param camera Which's parameters will be updated.
+@param suggestion The updating suggestion.
+@return No.
+@see CameraParameterSuggestionObj
+@note No.
+*/
+void incrementCameraParameterWithSuggestion(Camera camera, CameraParameterSuggestion suggestion);
+
+/**
+@brief Check whether the optimization is achieved.
+
+@param camera Camera that will be evalated.
+@param suggestion Suggestion updating suggestion.
+@return true If check passed.
+@return false If check failure.
+@see CameraParameterSuggestionObj
+@note No.
+*/
+bool cameraParameterOptimizationSatisfied(Camera camera, CameraParameterSuggestion suggestion);
+
+
+/**
+@brief Extract the relative relationship between tow (neighboring) cameras.
+
+@param fromCamera Basis camera.
+@param toCamera Target camera the relative information would be extract.
+@return Relative camera object.
+@see resolveCameraparameterSuggestion().
+@note No.
+*/
+Camera extractRelativeCamera(Camera fromCamera, Camera toCamera);
+
+/**
+@brief Release camera parameter suggestion object.
+
+@param suggestion Which object to be released.
+@return void.
+@see CameraParameterSuggestionObj
+@note No.
+*/
+void releaseCameraParameterSuggestion(CameraParameterSuggestion suggestion);
+
+
+
+/**
+@brief Optimize camera parameters by the optcal flow constrains, this is to do a non-linear optimizing task, until optimization task is satisfied.
+
+@param camera The optimizing target.
+@param neighborCameras The camera vector of neighbors.
+@param neighborFlows The optical flow vector of neighbors.
+@return NO
+@see frameOptimizeCameraParameters() flowGraphLocalOptimize()
+@note No.
+*/
+void resolveCameraParameters(Camera camera, const std::vector<Camera>& neighborCameras, const std::vector<Flow>& neighborFlows);
+
+/**
+@brief Optimize camera parameters, by the optcal flow constrains, for one step. Firstly, each neibor give a suggestion, and then, they are fused to a optimized result. If not satisfy terminate condition, then otpimize the parameters again.
+
+@param camera The optimizing target.
+@param neighborCameras The camera vector of neighbors.
+@param neighborFlows The optical flow vector of neighbors.
+@return NO
+@see frameOptimizeCameraParameters() flowGraphLocalOptimize()
+@note No.
+*/
+CameraParameterSuggestion resolveCameraparameterSuggestion(Camera camera, const std::vector<Camera>& neighborCameras, const std::vector<Flow>& neighborFlows);
+
+/**
+@brief A signle contrain version to optimize camera parameters, by neibor camera and flow. First, extract relative camera between two neighboring cameras, and resovle the suggestion for the relative camera.
+
+@param camera The optimizing target.
+@param neighborCamera Neighbor's camera.
+@param neighborFlow Neighbor's flow.
+@return A camera parameter optimize suggestion object.
+@see frameOptimizeCameraParameters(); flowGraphLocalOptimize(); resolveCameraparameterSuggestion().
+@note No.
+*/
+CameraParameterSuggestion resolveCameraparameterSuggestion(Camera camera, const Camera neighborCamera, const Flow neighborFlow);
+
+
+/**
+@brief Resolve camera parameter optimize suggestion via optical flow.
+
+@param camera The optimizing target object, from its initial states.
+@param flow The optimizing contrains, to be reconciled by camera adjustment.
+@return A camera parameter optimize suggestion object.
+@see frameOptimizeCameraParameters(), flowGraphLocalOptimize(), resolveCameraparameterSuggestion(), extractRelativeCamera().
+@note No.
+*/
+CameraParameterSuggestion resolveCameraparameterSuggestion(const Camera camera, const Flow flow);
+
+/**
+@brief Fuse several camera parameter optimize suggestions into a one.
+
+@param suggestionVector The vector of camera parameter optimize suggestion, which will be fused.
+@return A fused camera parameter optimize suggestion.
+@see frameOptimizeCameraParameters(); flowGraphLocalOptimize(); resolveCameraparameterSuggestion().
+@note No.
+*/
+CameraParameterSuggestion fuseCameraParameterSuggestions(const std::vector<CameraParameterSuggestion>& suggestionVector);
+
+/**
+@brief Retrieve optimizing result from resolver object.
+
+@param resovler Which from resolver's result will be retrieved.
+@return A pointor to memory buffer storing resolver's optimizing result.
+@see resolve().
+@note No.
+*/
+double* resolverGetOptimizedResult(Resolver resolver);
+
+
+double* resolverGetOptimizedResult(Resolver resolver) {
+	return NULL;
+}
+
+
+
+CameraParameterSuggestion createEmptyCameraParameterSuggestion() {
+	return new CameraParameterSuggestionObj();
+}
+
+CameraParameterSuggestion createCameraParameterSuggestionFromMemory(double* data) {
+	return new CameraParameterSuggestionObj();
+}
+
+void incrementCameraParameterWithSuggestion(Camera camera, CameraParameterSuggestion suggestion) {
+
+
+
+}
+
+bool cameraParameterOptimizationSatisfied(Camera camera, CameraParameterSuggestion suggestion) {
+	return true;
+}
+
+Camera extractRelativeCamera(Camera fromCamera, Camera toCamera) {
+	return createOriginalCamera();
+}
+
+void releaseCameraParameterSuggestion(CameraParameterSuggestion suggestion) {
+	delete suggestion;
+}
+
+void resolveCameraParameters(Camera camera, const std::vector<Camera>& neighborCameras, const std::vector<Flow>& neighborFlows) {
+
+	CameraParameterSuggestion suggestion;
+	while (true) {
+		suggestion = resolveCameraparameterSuggestion(camera, neighborCameras, neighborFlows);
+		incrementCameraParameterWithSuggestion(camera, suggestion);
+		if (cameraParameterOptimizationSatisfied(camera, suggestion)) {
+			releaseCameraParameterSuggestion(suggestion);
+			break;
+		}
+		releaseCameraParameterSuggestion(suggestion);
+	}
+
+}
+
+CameraParameterSuggestion resolveCameraparameterSuggestion(Camera camera, const std::vector<Camera>& neighborCameras, const std::vector<Flow>& neighborFlows) {
+
+	assert(neighborCameras.size() == neighborFlows.size());
+
+	std::vector<Camera>::const_iterator itCamera = neighborCameras.begin();
+	std::vector<Flow>::const_iterator itFlow = neighborFlows.begin();
+
+	std::vector<CameraParameterSuggestion> suggestionVector;
+
+
+	while(itFlow != neighborFlows.end()) {
+
+		CameraParameterSuggestion suggestion = resolveCameraparameterSuggestion(camera, *itCamera, *itFlow);
+		suggestionVector.push_back(suggestion);
+		itCamera++;
+		itFlow++;
+
+	}
+	
+	return fuseCameraParameterSuggestions(suggestionVector); 
+}
+
+CameraParameterSuggestion resolveCameraparameterSuggestion(Camera camera, const Camera neighborCamera, const Flow neighborFlow) {
+
+	Camera relativeCamera = extractRelativeCamera(camera, neighborCamera);
+	return resolveCameraparameterSuggestion(relativeCamera, neighborFlow);
+}
+
+CameraParameterSuggestion resolveCameraparameterSuggestion(const Camera camera, const Flow flow) {
+
+
+	Resolver resolver = createEmptyResolver();
+	Responder responder = createCameraPrameterResponder(camera, flow);
+	resolverSetResponder(responder);
+
+	CameraParameterSuggestion suggestion = createCameraParameterSuggestionFromMemory(
+resolverGetOptimizedResult(resolver));
+
+	releaseResolver(resolver);
+	releaseResponder(responder);
+	
+	return suggestion;
+
+}
+
+CameraParameterSuggestion fuseCameraParameterSuggestions(const std::vector<CameraParameterSuggestion>& suggestionVector) {
+	return createEmptyCameraParameterSuggestion();
+}
+
+
+
+	cameraUpdateParameterFromMemory(frame->camera, reolver->result);
+
+
+std::vector<Camera> frameGetNeighborCameraVector(FlowFrame frame) {
+	const std::vector<FlowFrameNeighbor>& neighborVector = frameGetNeighborVector(frame);
+	std::vector<Camera> cameraVector;
+	for (std::vector<FlowFrameNeighbor>::const_iterator itr = neighborVector.begin(); itr != neighborVector.end(); itr++) {
+		cameraVector.push_back((*itr)->frame->camera);
+	}
+	return cameraVector;
+}
+std::vector<Flow> frameGetNeighborFlowVector(FlowFrame frame) {
+	const std::vector<FlowFrameNeighbor>& neighborVector = frameGetNeighborVector(frame);
+	std::vector<Flow> flowVector;
+	for (std::vector<FlowFrameNeighbor>::const_iterator itr = neighborVector.begin(); itr != neighborVector.end(); itr++) {
+		flowVector.push_back((*itr)->flow);
+	}
+	return flowVector;
+}
+
+std::vector<FlowFrameNeighbor>& frameGetNeighborVector(FlowFrame frame) {
+	return frame->neighborVector;
+}
+
+
+
+	CameraParameterSuggestion suggestion = createCameraParameterSuggestionFromMemory(
+resolverGetOptimizedResult(resolver));
+	
+	return suggestion;
+	
+	Camera camera = frameGetCamera(frame);
+	std::vector<Camera> cameraVector = frameGetNeighborCameraVector(frame);
+	std::vector<Flow> flowVector =  frameGetNeighborFlowVector(frame);
+	resolveCameraParameters(camera, cameraVector, flowVector);
+
+	
+	// for last frame
+	// estimate the rotation firstly
+	// determine the translation secondly
+	// and then update depth
+	// as to this, local optimaize completed
+
+
+void cameraFlowErrorJacobinResolverCallback(void* constrains, void* error, void* yacobin, Indics4 index);
+
+
+
+
+/**
+@brief Set error and jacobin callback for a resolver object.
+
+@param resovler Which resolver object will be sed.
+@param callback A error and jacobin callback (function pointor.
+
+@return No.
+@see No.
+@note No.
+*/
+void resolverSetErrorJacobinCallback(Resolver resolver, ErrorJacobinCallback callback);
+
+/**
+@brief Add a constrain to resolver, which will transmit to error-jacobin callback method. The constrain order will in accord with calling sequence.
+
+@param resovler Which resolver object will add constrain to.
+@param constrain A constrain element that will transmit to error-jacobin callback method.
+
+@return No.
+@see No.
+@note No.
+*/
+void resolverAddConstrain(Resolver resolver, void* constrain);
+
+	
+	/** Constrain vector will parsed by specified error-yacobin callback */
+	void* constrtains[10];
+
+
+
+	/** Callback will be called indexCount times for collecting optimizing infomation. */
+	ErrorJacobinCallback ejCallback;
+
+	/** The times will callback will be called. The index passes to callback will interate in this variable. */
+	Space4 space;
+
+/**
+@brief A definition of error-jacobin callback (function pointor), which will called by a resolver many times to collect optimizing needed infomations.
+*/
+typedef void (*ErrorJacobinCallback)(void* constrains, void* error, void* yacobin, Indics4 index);
+
+
+
+void resolverAddConstrain(Resolver resolver, void* constrain) {
+	assert(0);
+}
+
+void resolverSetErrorJacobinCallback(Resolver resolver, ErrorJacobinCallback callback) {
+	assert(0);
+
+}
+
+
+void cameraFlowErrorJacobinResolverCallback(void* constrains, void* error, void* yacobin) {
+
+}
+
+
+
+
+void resolve(Resolver resolver) {
+
+	// get target dimensions
+	// get source dimensions
+
+	// foreach tDim in target dimensions {
+		// err, jacobin
+		// foreach sDim in source dimensions {
+			// responder->calculateErrorJacobin(tDim, sDim, err, jacobin);
+			// accumulate(err jacobin);
+		// }
+		// set optimizing result at tDim
+	// }
+/*
+	for (int batch = 0; batch < resolver->space[0]; ++batch) {
+		for (int channel = 0; channel < resolver->space[1]; ++channel) {
+			for (int col = 0; col < resolver->space[2]; ++col) {
+				for (int row = 0; row < resolver->sapce[3]; ++row) {
+					Indics4 index = { { batch, channel, col, row } };
+					ejCallback(resolver->constrains, NULL, NULL, index);
+				}
+			}
+		}
+	}
+*/
+}
+
+void resolverSetErrorJacobinCallback(Resolver resolver, ErrorJacobinCallback callback) {
+	assert(0);
+	resolver->ejCallback = callback;
+
+}
+
+void resolverAddConstrain(Resolver resolver, void* constrain) {
+
+	assert(0);
+	int size = sizeof(resolver->constrains) / sizeof(resolver->constrains[0]);
+	int i;
+	for (i = 0; i < size; i++) {
+		if (resolver->constrains[i] == 0) {
+			resolver->constrains[i] = constrain;
+			break;
+		}
+	}
+	assert(i < size);
+}
+
+
+
+Resolver createEmptyResolver(Space4 space) {
+	Resolver resolver = new ResolverObj();
+	resolver->space = space;
+	resolver->ejCallback = NULL;
+	memset(resolver->constrains, 0, sizeof(resolver->constrains));
+	return resolver;
+}
+	
+
+/*
+	int cols = flowGetColumns(flow);
+	int rows = flowGetRows(flow);
+	Space4 space = { { 1, 1, cols, rows } };
+	Resolver resolver = createEmptyResolver(space);
+	resolverAddConstrain(resolver, camera);
+	resolverAddConstrain(resolver, flow);
+	resolverSetErrorJacobinCallback(resolver,  cameraFlowErrorJacobinResolverCallback);
+	resolve(resolver);
+
+	CameraParameterSuggestion suggestion = createCameraParameterSuggestionFromMemory(
+resolverGetOptimizedResult(resolver));
+	releaseResolver(resolver);
+	
+	return suggestion;
+*/
+	return createEmptyCameraParameterSuggestion();
+
 /**
 @brief Optimize camera parameters by the optcal flow constrains, this is to do a non-linear optimizing task. Firstly, each neibor give a suggestion, and then, they are fused to a optimized result. If not satisfy terminate condition, then otpimize the parameters again.
 

@@ -2,14 +2,11 @@
 #include "dslam.h"
 #include <iostream>
 
-
-
 int main(int argc, char** argv) {
 
 	std::cout << "hello local" << std::endl;
 
-	dslam::FlowGraph graph =
-		dslam::createEmptyFlowGraph();
+	dslam::FlowGraph graph = dslam::createEmptyFlowGraph();
 
 	dslam::Flow flow1, flow2;
 	//while (true) {
@@ -21,9 +18,8 @@ int main(int argc, char** argv) {
 		const char* name2 = dslam::queryFlowName(i+1, i);
 		flow2 = dslam::createFlowFromFile(name2);
 
-		dslam::flowGraphAddFrameWithFlows(graph, flow1, flow2);
+		dslam::flowGraphAddFlowFrameWithFlows(graph, flow1, flow2);
 		dslam::flowGraphLocalOptimize(graph);
-		dslam::flowGraphCullRedundantFlow(graph);
 	}
 
 	dslam::releaseFlowGraph(graph);

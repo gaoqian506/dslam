@@ -14,15 +14,15 @@ BINS=$(BIN_SRCS:%.cpp=%.bin)
 G2O_ROOT=/home/gq/Documents/tools/g2o
 
 LIBS=-lopencv_highgui -lopencv_core -lopencv_imgproc -lopencv_video
-LIBS+=-L/home/gq/Documents/tools/g2o/lib
-LIBS+=-lg2o_types_slam3d
-LIBS+=-lg2o_stuff
-LIBS+=-Wl,-rpath,/home/gq/Documents/tools/g2o/lib  
+#LIBS+=-L/home/gq/Documents/tools/g2o/lib
+#LIBS+=-lg2o_types_slam3d
+#LIBS+=-lg2o_stuff
+#LIBS+=-Wl,-rpath,/home/gq/Documents/tools/g2o/lib  
 
 
 INCLUDES=-Iinclude
 INCLUDES+=-I/usr/include/eigen3
-INCLUDES+=-I$(G2O_ROOT) -I$(G2O_ROOT)/build 
+#INCLUDES+=-I$(G2O_ROOT) -I$(G2O_ROOT)/build 
 
 
 nothing:
