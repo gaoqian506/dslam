@@ -2,6 +2,279 @@
 
 
 
+----------------------------------------
+// dslam.cpp
+
+#include "slam.h"
+
+int main (int argc, char** argv) {
+    dslam::Slam slam(argc, argv);
+    return slam.run();
+}
+
+
+---------------------------------------
+// slam.h
+
+#include "layer.h"
+#include "builder.h"
+#include "communicator.h"
+#include "console.h"
+
+pthread_t threadStart(func* func, void* arg) {
+
+	int err;
+	pthread_t ntid;
+	err = pthread_create(&ntid, NULL, func, arg);
+	if (err != 0)
+		printf("can't create thread: %s
+	", strerror(err));
+	return ntid;
+}
+
+class Slam {
+
+public:
+
+	Slam(int argc, char** argv) {
+		Config::parse(argc, argv);
+		pipe = new Pipe();
+		player = new Player(Config::videoFile(), pipe);
+		graph = new FlowGraph(pipe);
+		communictor = new Communicator();
+		console = new Console();
+	}
+
+	~Slam() {
+		delete console;
+		delete communicator;
+		delete graph;
+		delete player;
+		delete pipe;
+	}
+
+	int run() {
+		threadStart(Player::play, player);
+		threadStart(Graph::locallyLoop, graph);
+		threadStart(Graph::globallyLoop, graph);
+		threadStart(Communicator::communictor, communicator);
+		return console.start();
+	}
+
+private:
+	Player player_;
+	Graph graph_;
+	Communicator communicator_;
+	Console console;
+	Pipe<Blob*>* pipe;
+
+};
+
+--------------------------------------
+// player
+
+namespace dslam:
+
+class Player {
+
+public:
+	Player(const char* file, Pipe* pipe) {
+		capture = new cv::Capture(file);
+		pipe = pipe;
+	}
+	void play() {
+		cv::Mat image = capture.read();
+		while(!image.empty()) {
+			Blob* blob = new Blob(image);
+			pipe->push(blob);
+			image = capture.read();
+		}
+		pipe->push(0);
+	}
+
+	static void* play(Player* player) {
+	player->play();
+	}
+private:
+	cv::Capture capture;
+	Pipe* pipe;
+
+}
+
+----------------------------------------
+// pipe
+
+#include <asm/semaphore.h>
+
+namespace dslam:
+
+class Pipe {
+
+public:
+
+	Pipe(int count = 8) {
+		capacity_ = count+1;
+		iems_ = new malloc(capacity_ * sizof(void*));
+		sema_init (&sema_, count);
+		push_cur_ = 0;
+		pop_cur = 0;
+	}
+
+	void push(void* item) {
+		down(&sema_);
+		items_[push_cur_++] = item;
+		push_cur_ %= capacity_;
+	}
+
+	~Pipe() {
+		free(item_);
+	}
+
+	void* pop() {
+	up(&sema_);
+	void* item = items_[pop_cur_++];
+	pop_cur_ %= capacity_;
+	return item;
+	}
+
+private:
+
+	int capacity_;
+	void** items_;
+	semaphore sema_;
+	int push_cur_;
+	int pop_cur_; 
+};
+
+----------------------------
+// Graph
+
+class Graph() {
+
+public:
+
+	Graph(Pipe* pipe) {
+		pipe_ = pipe;
+	}
+
+	void locallyLoop() {
+		void* image = 0;
+		while(image = pipe_->pop()) {
+			push(Blob* image);
+			localOptimize();
+		}
+	}
+
+	void globallyLoop() {
+		while(true) {
+			globalOptimize();
+		}
+	}
+
+	virtual void push(Blob* image);
+	virtual void localOptimize();
+	virtual void globalOptimize();
+
+private:
+	Pipe* pipe_;
+
+
+};
+
+
+----------------------------------
+// FlowGraph
+
+class FlowGraph : public Graph {
+
+public:
+	
+	FlowGraph(Pipe* pipe) : Graph(pipe) {
+		localOptimizer = FlowFrameOptimizer();
+		globalOptimizer = FlowGraphOptimizer();
+	}
+	virtual void push(Blob* image) {
+
+		Frame* last = graph->last();
+		if (last) {
+			Frame frame = new Frame(iamge, last->camera);
+			last->addNeighbor(image);
+		}
+		base::pushFrame(frame);
+		
+	}
+	virtual void localOptimize() {
+		localOptimizer->optimizer();
+	}
+	virtual void globalOptimize() {
+		localOptimizer->optimizer();
+	}
+
+private:
+	Optimizer* localOptimizer;
+	Optimizer* globalOptimizer;
+
+};
+
+-------------------------------
+// flowframe 
+
+class FlowFrame : public Frame {
+
+
+protected:
+
+	std::vector<std::pair<Frame*, Flow*>> neighbors;
+	
+};
+
+
+------------------------------
+// frame
+
+class Frame {
+
+public:
+	inline int width() const { return image ? image->shape[3] : 0 }
+	inline int height() const { return image ? image->shape[2] : 0 }
+
+protected:
+	Blob* image;
+
+
+
+};
+
+
+
+
+		threadStart(Builder::build, builder);
+https://github.com/gaoqian506/dslam.git
+
+class Builder() {
+
+public:
+	Builder(Pipe* pipe) {
+		pipe_ = pipe;
+		graph_ = new FlowGraph(pipe_);
+	}
+	void build() {
+		threadStart(Graph::locallyOptimize, graph_);
+		threadStart(Graph::globallyOptimize, graph_);
+		while(true) {
+			void* frame = pipe_->pop();
+			graph_->addFrame((Frame*)frame);
+			
+		}
+	}
+
+
+private:
+	Pipe* pipe_;
+	Graph* graph_;
+};
+
+
 
 
 		//dslam::flowGraphCullRedundantFlow(graph);
